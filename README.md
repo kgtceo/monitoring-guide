@@ -1,5 +1,12 @@
 # monitoring-guide
 
+### ▶ Live demo: **[monitoring-guide.kareemghazal.com](https://monitoring-guide.kareemghazal.com)**
+
+Ask a monitoring question and get a cited answer — or an honest "not covered" when the corpus
+doesn't have it. (First run ~10–20s.)
+
+![monitoring-guide: a cited answer about drug monitoring, with the source quote, and abstention when out of scope](docs/images/screenshot.png)
+
 > **Demo / educational — not clinical advice.** Answers come only from a small illustrative corpus
 > paraphrased from public UK guidance (BNF / NICE CKS style). Not a substitute for current guidance.
 
