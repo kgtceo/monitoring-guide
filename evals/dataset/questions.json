@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What monitoring does a patient on lithium need, and how often?",
+    "expected_doc": "high_risk_drugs.md",
+    "expect_answer": true
+  },
+  {
+    "question": "How often should methotrexate FBC and LFT be checked?",
+    "expected_doc": "high_risk_drugs.md",
+    "expect_answer": true
+  },
+  {
+    "question": "What should an annual diabetes review include?",
+    "expected_doc": "long_term_conditions.md",
+    "expect_answer": true
+  },
+  {
+    "question": "What monitoring is needed after starting an ACE inhibitor?",
+    "expected_doc": "high_risk_drugs.md",
+    "expect_answer": true
+  },
+  {
+    "question": "What is the recommended insulin dose for a newly diagnosed type 1 diabetic child?",
+    "expected_doc": null,
+    "expect_answer": false
+  },
+  {
+    "question": "What antibiotic should I prescribe for a chest infection?",
+    "expected_doc": null,
+    "expect_answer": false
+  }
+]

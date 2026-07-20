@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "monitoring-guide"
+version = "1.0.0"
+description = "Grounded, cited Q&A over illustrative UK primary-care drug/condition monitoring guidance — abstains when out of scope, with an eval harness. Demo; not clinical advice."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Kareem Ghazal" }]
+dependencies = [
+    "anthropic>=0.39",
+    "voyageai>=0.2",
+    "numpy>=1.26",
+    "pydantic>=2.5",
+    "python-dotenv>=1.0",
+    "typer>=0.12",
+    "rich>=13.7",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+monitoring-guide = "monitoring_guide.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/monitoring_guide"]
+artifacts = ["src/monitoring_guide/data/**/*.md"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests", "evals"]
+testpaths = ["tests"]
+addopts = "-q"
