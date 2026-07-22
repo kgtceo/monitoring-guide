@@ -54,6 +54,8 @@ python evals/run_evals.py --no-judge  # skip the judge
 - **Grounding** — every citation quote actually appears in its cited chunk (deterministic).
 - **Judge** — opus confirms faithfulness + appropriate abstention.
 
+**Latest run (claude-sonnet-4-6, voyage-3 embeddings):** all gates pass — the in-scope ACE-inhibitor monitoring question is answered and grounded, while out-of-scope questions ("insulin dose?", "what antibiotic for a chest infection?") are correctly refused.
+
 ## Tests
 
 ```bash
@@ -63,7 +65,24 @@ pytest -q   # offline: chunking, retrieval plumbing, grounded-answer path (fake 
 ## Web
 
 `web/` — a Next.js UI: ask a question, get a cited answer or an honest abstention, safety banner
-throughout. See [DEPLOY.md](./DEPLOY.md).
+throughout.
+
+Run it locally in two terminals:
+
+```bash
+# terminal 1 — the API
+pip install -e .
+cp .env.example .env                  # add ANTHROPIC_API_KEY and VOYAGE_API_KEY
+python -m uvicorn monitoring_guide.api:app --port 8000
+
+# terminal 2 — the UI
+cd web
+npm install
+echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+npm run dev                           # open http://localhost:3000
+```
+
+See [DEPLOY.md](./DEPLOY.md).
 
 ## License
 
