@@ -7,6 +7,10 @@ doesn't have it. (First run ~10–20s.)
 
 ![monitoring-guide: a cited answer about drug monitoring, with the source quote, and abstention when out of scope](docs/images/screenshot.png)
 
+**How it works** — input → pipeline → output, with the eval harness that measures it:
+
+![monitoring-guide — architecture and eval harness](docs/images/architecture.png)
+
 > **Demo / educational — not clinical advice.** Answers come only from a small illustrative corpus
 > paraphrased from public UK guidance (BNF / NICE CKS style). Not a substitute for current guidance.
 
