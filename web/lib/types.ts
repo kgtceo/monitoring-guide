@@ -27,9 +27,16 @@ export interface RagResult {
   query: string;
   answer: Answer;
   retrieved: RetrievedChunk[];
+  dropped_citations: Citation[];
+}
+
+export interface Example {
+  label: string;
+  text: string;
+  tag: string;
 }
 
 export interface ExamplesResponse {
-  examples: string[];
+  examples: Example[];
   disclaimer: string;
 }

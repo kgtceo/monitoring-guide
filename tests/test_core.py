@@ -57,3 +57,77 @@ def test_empty_store_abstains_without_calling_llm():
     result = rag.answer("anything")
     assert result.answer.abstained is True
     assert client.calls == 0
+
+
+def test_retrieval_floor_abstains_without_calling_llm():
+    """Below the abstention floor, out-of-scope questions never reach the LLM."""
+    corpus = {"doc.md": "Lithium needs a level every 3 months."}
+    store = build_store(corpus, FakeEmbedder())
+    client = FakeAnswerClient()
+    rag = Rag(FakeEmbedder(), store, client, min_retrieval_score=0.99)  # floor above any score
+    result = rag.answer("Who won the football world cup?")
+    assert result.answer.abstained is True
+    assert "outside the indexed" in result.answer.answer
+    assert client.calls == 0
+
+
+def test_fabricated_citation_is_dropped_and_answer_withheld():
+    """RUNTIME grounding: a citation whose quote is not verbatim in the cited chunk is
+    dropped; an answered response with no surviving citation is forced to abstain."""
+    corpus = {"doc.md": "Lithium needs a level every 3 months."}
+    store = build_store(corpus, FakeEmbedder())
+    chunk_id = store.search(FakeEmbedder().embed(["lithium"], is_query=True)[0], k=1)[0].chunk.id
+    client = FakeAnswerClient(Answer(
+        answer="Lithium levels are checked weekly.", abstained=False,
+        citations=[Citation(chunk_id=chunk_id, quote="checked weekly without fail")],  # fabricated
+    ))
+    rag = Rag(FakeEmbedder(), store, client)
+    result = rag.answer("How often is lithium checked?")
+    assert result.answer.abstained is True
+    assert result.answer.citations == []
+    assert len(result.dropped_citations) == 1
+
+
+def test_partial_citations_keep_answer_but_drop_bad_ones():
+    corpus = {"doc.md": "Lithium needs a level every 3 months."}
+    store = build_store(corpus, FakeEmbedder())
+    chunk_id = store.search(FakeEmbedder().embed(["lithium"], is_query=True)[0], k=1)[0].chunk.id
+    client = FakeAnswerClient(Answer(
+        answer="Every 3 months.", abstained=False,
+        citations=[
+            Citation(chunk_id=chunk_id, quote="every 3 months"),          # grounded
+            Citation(chunk_id=chunk_id, quote="and annually thereafter"),  # fabricated
+            Citation(chunk_id="nonexistent#0", quote="every 3 months"),    # wrong chunk
+        ],
+    ))
+    rag = Rag(FakeEmbedder(), store, client)
+    result = rag.answer("How often is lithium checked?")
+    assert result.answer.abstained is False
+    assert len(result.answer.citations) == 1
+    assert len(result.dropped_citations) == 2
+
+
+def test_citation_grounding_is_case_and_whitespace_insensitive():
+    corpus = {"doc.md": "Lithium needs a LEVEL   every 3 months."}
+    store = build_store(corpus, FakeEmbedder())
+    chunk_id = store.search(FakeEmbedder().embed(["lithium"], is_query=True)[0], k=1)[0].chunk.id
+    client = FakeAnswerClient(Answer(
+        answer="Every 3 months.", abstained=False,
+        citations=[Citation(chunk_id=chunk_id, quote="level every 3 months")],
+    ))
+    rag = Rag(FakeEmbedder(), store, client)
+    result = rag.answer("How often is lithium checked?")
+    assert result.answer.abstained is False and len(result.answer.citations) == 1
+
+
+def test_abstention_normalises_stray_citations_away():
+    corpus = {"doc.md": "Lithium needs a level every 3 months."}
+    store = build_store(corpus, FakeEmbedder())
+    chunk_id = store.search(FakeEmbedder().embed(["lithium"], is_query=True)[0], k=1)[0].chunk.id
+    client = FakeAnswerClient(Answer(
+        answer="Not in the sources.", abstained=True,
+        citations=[Citation(chunk_id=chunk_id, quote="every 3 months")],  # stray
+    ))
+    rag = Rag(FakeEmbedder(), store, client)
+    result = rag.answer("How often is lithium checked?")
+    assert result.answer.abstained is True and result.answer.citations == []

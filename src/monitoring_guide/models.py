@@ -49,8 +49,14 @@ class Answer(BaseModel):
 
 
 class RagResult(BaseModel):
-    """Everything the pipeline returns for one query — answer plus the retrieval trace."""
+    """Everything the pipeline returns for one query — answer plus the retrieval trace and
+    any citations the runtime grounding check rejected (surfaced, not silently discarded)."""
 
     query: str
     answer: Answer
     retrieved: list[RetrievedChunk]
+    dropped_citations: list[Citation] = Field(
+        default_factory=list,
+        description="Citations the runtime verification dropped: quote not verbatim in the "
+        "cited chunk, or the chunk was not among those retrieved.",
+    )

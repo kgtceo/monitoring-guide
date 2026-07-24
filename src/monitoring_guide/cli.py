@@ -30,7 +30,7 @@ def ask(question: str = typer.Argument(..., help="Your monitoring question.")) -
     settings = Settings.from_env()
     embedder = VoyageEmbedder(model=settings.embed_model)
     store = build_store(load_corpus(), embedder)
-    rag = Rag(embedder, store, LLMClient(settings))
+    rag = Rag(embedder, store, LLMClient(settings), min_retrieval_score=settings.min_retrieval_score)
 
     with console.status("Retrieving guidance…"):
         result = rag.answer(question)

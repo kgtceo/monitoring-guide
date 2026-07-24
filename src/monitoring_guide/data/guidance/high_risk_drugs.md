@@ -3,6 +3,14 @@
 Paraphrased from public UK primary-care monitoring guidance (BNF / NICE CKS style).
 Illustrative and simplified for a demo — not a substitute for current guidance.
 
+## Baseline monitoring before starting treatment
+Before starting azathioprine, check TPMT (thiopurine methyltransferase) activity — absent or low
+TPMT activity greatly increases the risk of bone-marrow toxicity — along with a baseline FBC, U&E
+and LFT. Before starting methotrexate, take a baseline FBC, U&E and LFT (and consider a chest
+X-ray where respiratory disease is suspected). Before starting amiodarone, take baseline thyroid
+and liver function tests, and consider a baseline chest X-ray because of the risk of pulmonary
+toxicity.
+
 ## Methotrexate
 Patients on methotrexate need full blood count (FBC), urea and electrolytes (U&E) and liver
 function tests (LFT) monitored regularly — typically every 12 weeks once stable, and more often
